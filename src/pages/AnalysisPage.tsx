@@ -302,8 +302,13 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
     }
   ];
 
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
