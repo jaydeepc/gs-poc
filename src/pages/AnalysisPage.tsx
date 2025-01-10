@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import { motion } from 'framer-motion';
 import { Typography, Grid, IconButton, Box, Tabs, Tab } from '@mui/material';
-import { ArrowBack, Assessment, Security, Gavel, AccountBalance, TrendingUp } from '@mui/icons-material';
+import { ArrowBack, Assessment, Security, Gavel, AccountBalance, TrendingUp, ChevronRight } from '@mui/icons-material';
 import RiskCard from '../components/RiskCard';
 import Logo from '../components/Logo';
 import { RiskAnalysis, BusinessType, Region } from '../types';
@@ -161,20 +161,24 @@ const TabsContainer = styled('div')`
 
 const TabsWrapper = styled('div')`
   position: relative;
+`;
+
+const ScrollIndicator = styled(motion.div)`
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  z-index: 2;
+  display: none;
   
   @media (max-width: 899px) {
-    &::after {
-      content: 'Scroll for more categories →';
-      position: absolute;
-      bottom: -24px;
-      right: 16px;
-      font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    .MuiSvgIcon-root {
       color: rgba(0, 0, 0, 0.7);
-      background: rgba(255, 255, 255, 0.9);
-      padding: 4px 12px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      pointer-events: none;
+      font-size: 24px;
     }
   }
 `;
@@ -377,6 +381,12 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
       <MainContent>
         <TabsContainer>
           <TabsWrapper>
+            <ScrollIndicator
+              animate={{ x: [0, 5, 0] }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+            >
+              <ChevronRight />
+            </ScrollIndicator>
             <StyledTabs
               value={currentTab}
               onChange={handleTabChange}
