@@ -5,6 +5,7 @@ import { Container, Grid } from '@mui/material';
 import { Analytics, Security, Timeline } from '@mui/icons-material';
 import { BusinessType, Region } from '../types';
 import SelectionForm from './SelectionForm';
+import Logo from './Logo';
 
 const HeroContainer = styled('div')`
   position: relative;
@@ -54,6 +55,11 @@ const Features = styled('div')`
   gap: 24px;
   margin-top: 48px;
   
+  @media (max-width: 899px) {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
   .feature {
     display: flex;
     align-items: center;
@@ -78,6 +84,14 @@ const Features = styled('div')`
       color: rgba(255, 255, 255, 0.9);
       font-size: 0.9rem;
     }
+  }
+`;
+
+const LogoContainer = styled('div')`
+  margin-bottom: 48px;
+  
+  @media (max-width: 899px) {
+    margin-bottom: 32px;
   }
 `;
 
@@ -111,6 +125,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({
               transition={{ duration: 0.8 }}
             >
               <HeroContent>
+                <LogoContainer>
+                  <Logo />
+                </LogoContainer>
                 <h1>
                   Intelligent <span>Risk Analysis</span> for Your Business
                 </h1>
