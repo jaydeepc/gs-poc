@@ -12,7 +12,11 @@ const HeroContainer = styled('div')`
   min-height: 100vh;
   background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
   overflow: hidden;
-  padding: 80px 0;
+  padding: 40px 0;
+  
+  @media (min-width: 900px) {
+    padding: 80px 0;
+  }
   
   &::before {
     content: '';
@@ -30,10 +34,14 @@ const HeroContent = styled('div')`
   max-width: 600px;
   
   h1 {
-    font-size: 3.5rem;
+    font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
     line-height: 1.2;
+    
+    @media (min-width: 900px) {
+      font-size: 3.5rem;
+    }
     
     span {
       background: linear-gradient(90deg, #64B5F6, #E1F5FE);
@@ -43,36 +51,68 @@ const HeroContent = styled('div')`
   }
   
   p {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     opacity: 0.9;
     margin-bottom: 2rem;
     line-height: 1.6;
+    
+    @media (min-width: 900px) {
+      font-size: 1.25rem;
+    }
+  }
+`;
+
+const LogoContainer = styled('div')`
+  margin-bottom: 32px;
+  transform: scale(1.4);
+  transform-origin: left;
+  margin-left: 16px;
+  
+  @media (min-width: 900px) {
+    margin-bottom: 48px;
+    transform: scale(1.2);
+    margin-left: 0;
   }
 `;
 
 const Features = styled('div')`
-  display: flex;
-  gap: 24px;
-  margin-top: 48px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 32px;
+  padding: 0 16px;
   
-  @media (max-width: 899px) {
-    flex-direction: column;
-    gap: 16px;
+  @media (min-width: 900px) {
+    margin-top: 48px;
+    padding: 0;
+    gap: 24px;
   }
   
   .feature {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 16px;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-2px);
+    }
     
     .icon {
-      width: 40px;
-      height: 40px;
+      width: 48px;
+      height: 48px;
       border-radius: 12px;
       background: rgba(255, 255, 255, 0.1);
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
       
       .MuiSvgIcon-root {
         color: #64B5F6;
@@ -82,16 +122,9 @@ const Features = styled('div')`
     
     .text {
       color: rgba(255, 255, 255, 0.9);
-      font-size: 0.9rem;
+      font-size: 1rem;
+      font-weight: 500;
     }
-  }
-`;
-
-const LogoContainer = styled('div')`
-  margin-bottom: 48px;
-  
-  @media (max-width: 899px) {
-    margin-bottom: 32px;
   }
 `;
 
@@ -117,7 +150,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   return (
     <HeroContainer>
       <Container maxWidth="lg">
-        <Grid container spacing={8} alignItems="center">
+        <Grid container spacing={{ xs: 4, md: 8 }} alignItems="center">
           <Grid item xs={12} md={6}>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
