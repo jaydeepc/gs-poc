@@ -54,15 +54,34 @@ const MainContent = styled('div')`
 const BackButton = styled(IconButton)`
   color: white;
   background: rgba(255, 255, 255, 0.1);
-  margin-bottom: 24px;
   
   &:hover {
     background: rgba(255, 255, 255, 0.2);
   }
+`;
+
+const HeaderSection = styled('div')`
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
   
   @media (max-width: 899px) {
     margin-bottom: 16px;
+    gap: 16px;
   }
+  
+  .logo-wrapper {
+    transform: scale(1.2);
+    
+    @media (max-width: 899px) {
+      transform: scale(1.1);
+    }
+  }
+`;
+
+const HeaderContent = styled('div')`
+  flex: 1;
 `;
 
 const StatsContainer = styled('div')`
@@ -145,12 +164,16 @@ const TabsWrapper = styled('div')`
   
   @media (max-width: 899px) {
     &::after {
-      content: 'Scroll for more';
+      content: 'Scroll for more categories →';
       position: absolute;
-      bottom: -20px;
+      bottom: -24px;
       right: 16px;
-      font-size: 0.75rem;
-      color: rgba(0, 0, 0, 0.6);
+      font-size: 0.875rem;
+      color: rgba(0, 0, 0, 0.7);
+      background: rgba(255, 255, 255, 0.9);
+      padding: 4px 12px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       pointer-events: none;
     }
   }
@@ -244,14 +267,6 @@ const RiskGrid = styled(Grid)`
   }
 `;
 
-const HeaderSection = styled('div')`
-  margin-bottom: 24px;
-  
-  @media (max-width: 899px) {
-    margin-bottom: 16px;
-  }
-`;
-
 interface AnalysisPageProps {
   analysis: RiskAnalysis;
   selectedBusiness: BusinessType;
@@ -315,23 +330,27 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
     }
   ];
 
-  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
   };
 
   return (
     <PageContainer>
       <Sidebar>
-        <BackButton onClick={onBack}>
-          <ArrowBack />
-        </BackButton>
-        
         <HeaderSection>
-          <Logo />
-          <Typography variant="body2" sx={{ opacity: 0.8, mt: 2, mb: { xs: 2, md: 4 } }}>
+          <BackButton onClick={onBack}>
+            <ArrowBack />
+          </BackButton>
+          <div className="logo-wrapper">
+            <Logo />
+          </div>
+        </HeaderSection>
+
+        <HeaderContent>
+          <Typography variant="body2" sx={{ opacity: 0.8, mb: { xs: 2, md: 4 } }}>
             {selectedBusiness.label} • {selectedRegion.label}
           </Typography>
-        </HeaderSection>
+        </HeaderContent>
 
         <StatsContainer>
           {stats.map((stat, index) => (
