@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import { motion } from 'framer-motion';
 import { Typography, Grid, IconButton, Box, Tabs, Tab } from '@mui/material';
-import { ArrowBack, Assessment, Security, Gavel, AccountBalance, TrendingUp, ChevronRight } from '@mui/icons-material';
+import { ArrowBack, Assessment, Security, Gavel, AccountBalance, TrendingUp } from '@mui/icons-material';
 import RiskCard from '../components/RiskCard';
 import Logo from '../components/Logo';
 import { RiskAnalysis, BusinessType, Region } from '../types';
@@ -156,30 +156,9 @@ const TabsContainer = styled('div')`
   @media (max-width: 899px) {
     margin: 0 -16px;
     border-radius: 0;
-  }
-`;
-
-const TabsWrapper = styled('div')`
-  position: relative;
-`;
-
-const ScrollIndicator = styled(motion.div)`
-  position: absolute;
-  top: 50%;
-  right: 8px;
-  transform: translateY(-50%);
-  z-index: 2;
-  display: none;
-  
-  @media (max-width: 899px) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    .MuiSvgIcon-root {
-      color: rgba(0, 0, 0, 0.7);
-      font-size: 24px;
-    }
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
 `;
 
@@ -192,45 +171,26 @@ const StyledTabs = styled(Tabs)`
   @media (max-width: 899px) {
     .MuiTabs-flexContainer {
       gap: 8px;
-      padding: 8px;
+      padding: 8px 16px;
     }
     
     .MuiTabs-scrollButtons {
-      opacity: 0.8;
-      width: 36px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      margin: 8px;
       
       &.Mui-disabled {
-        opacity: 0.3;
+        opacity: 0;
+        pointer-events: none;
       }
-    }
-  }
-  
-  &::after {
-    @media (max-width: 899px) {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      height: 100%;
-      width: 24px;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9));
-      pointer-events: none;
-      opacity: 0.8;
-    }
-  }
-  
-  &::before {
-    @media (max-width: 899px) {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 24px;
-      background: linear-gradient(270deg, transparent, rgba(255, 255, 255, 0.9));
-      pointer-events: none;
-      opacity: 0.8;
-      z-index: 1;
+      
+      svg {
+        font-size: 24px;
+        color: rgba(0, 0, 0, 0.7);
+      }
     }
   }
 `;
@@ -239,6 +199,7 @@ const StyledTab = styled(Tab)`
   text-transform: none;
   font-weight: 600;
   min-height: 56px;
+  padding: 6px 24px;
   
   &.Mui-selected {
     color: #1976d2;
@@ -246,20 +207,27 @@ const StyledTab = styled(Tab)`
   
   @media (max-width: 899px) {
     min-height: 48px;
-    padding: 6px 12px;
+    padding: 6px 16px;
     font-size: 0.875rem;
     
     .MuiSvgIcon-root {
-      font-size: 18px;
+      font-size: 20px;
+      margin-right: 8px;
     }
   }
 `;
 
-const TabContent = styled('div')`
+const ContentContainer = styled('div')`
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  margin-bottom: 24px;
   padding: 24px;
   
   @media (max-width: 899px) {
-    padding: 16px 12px;
+    margin: 16px -16px;
+    border-radius: 0;
+    padding: 16px;
   }
 `;
 
@@ -380,52 +348,46 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
 
       <MainContent>
         <TabsContainer>
-          <TabsWrapper>
-            <ScrollIndicator
-              animate={{ x: [0, 5, 0] }}
-              transition={{ repeat: Infinity, duration: 1.5 }}
-            >
-              <ChevronRight />
-            </ScrollIndicator>
-            <StyledTabs
-              value={currentTab}
-              onChange={handleTabChange}
-              variant="scrollable"
-              scrollButtons="auto"
-              allowScrollButtonsMobile
-            >
-              {Object.keys(risksByCategory).map((category) => (
-                <StyledTab
-                  key={category}
-                  label={
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      {getCategoryIcon(category)}
-                      <span>{category}</span>
-                    </Box>
-                  }
-                />
-              ))}
-            </StyledTabs>
-          </TabsWrapper>
-
-          {Object.entries(risksByCategory).map(([category, risks], index) => (
-            <TabContent
-              key={category}
-              role="tabpanel"
-              hidden={currentTab !== index}
-            >
-              {currentTab === index && (
-                <RiskGrid container spacing={2}>
-                  {risks.map((risk, riskIndex) => (
-                    <Grid item xs={12} key={riskIndex}>
-                      <RiskCard risk={risk} index={riskIndex} />
-                    </Grid>
-                  ))}
-                </RiskGrid>
-              )}
-            </TabContent>
-          ))}
+          <StyledTabs
+            value={currentTab}
+            onChange={handleTabChange}
+            variant="scrollable"
+            scrollButtons="auto"
+            allowScrollButtonsMobile
+          >
+            {Object.keys(risksByCategory).map((category) => (
+              <StyledTab
+                key={category}
+                label={
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    {getCategoryIcon(category)}
+                    <span>{category}</span>
+                  </Box>
+                }
+              />
+            ))}
+          </StyledTabs>
         </TabsContainer>
+
+        <ContentContainer>
+          <motion.div
+            key={currentTab}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
+              {Object.keys(risksByCategory)[currentTab]}
+            </Typography>
+            <RiskGrid container spacing={2}>
+              {risksByCategory[Object.keys(risksByCategory)[currentTab]].map((risk, index) => (
+                <Grid item xs={12} key={index}>
+                  <RiskCard risk={risk} index={index} />
+                </Grid>
+              ))}
+            </RiskGrid>
+          </motion.div>
+        </ContentContainer>
       </MainContent>
     </PageContainer>
   );
