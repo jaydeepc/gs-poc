@@ -1,6 +1,6 @@
-# Goldman Sachs Risk Audit Application
+# Business Risk Audit Application
 
-A sophisticated risk analysis tool built for Goldman Sachs that leverages AI to provide detailed, region-specific business risk assessments.
+A sophisticated risk analysis tool that leverages AI to provide detailed, region-specific business risk assessments.
 
 ## Features
 
@@ -80,4 +80,4 @@ A sophisticated risk analysis tool built for Goldman Sachs that leverages AI to 
 
 ## License
 
-Proprietary - Goldman Sachs 2024
+MIT License - 2024

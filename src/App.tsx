@@ -4,7 +4,6 @@ import { CssBaseline } from '@mui/material';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BusinessType, Region, RiskAnalysis } from './types';
 import HeroSection from './components/HeroSection';
-import SelectionForm from './components/SelectionForm';
 import AnalysisPage from './pages/AnalysisPage';
 import { generateRiskAnalysis } from './services/openai';
 
@@ -95,8 +94,7 @@ const App = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <HeroSection />
-            <SelectionForm
+            <HeroSection
               selectedBusiness={selectedBusiness}
               selectedRegion={selectedRegion}
               onBusinessSelect={setSelectedBusiness}

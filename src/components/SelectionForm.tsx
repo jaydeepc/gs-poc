@@ -8,14 +8,12 @@ import RegionSelector from './RegionSelector';
 import { Analytics, ArrowForward } from '@mui/icons-material';
 
 const FormContainer = styled(Paper)`
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 40px;
+  padding: 32px;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  border-radius: 24px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 `;
 
 const FormHeader = styled('div')`
@@ -110,11 +108,11 @@ const SelectionForm: React.FC<SelectionFormProps> = ({
               <Analytics />
             </Logo>
           </motion.div>
-          <Typography variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
-            Risk Analysis
+          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+            Get Started
           </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Select your business type and region to generate a comprehensive risk assessment
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            Select your business type and region to analyze potential risks
           </Typography>
         </FormHeader>
 
