@@ -19,6 +19,11 @@ const StyledCard = styled(motion(Card))<StyledCardProps>`
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 
+  @media (max-width: 899px) {
+    margin: 0 0 12px;
+    border-radius: 8px;
+  }
+
   &::before {
     content: '';
     position: absolute;
@@ -29,13 +34,13 @@ const StyledCard = styled(motion(Card))<StyledCardProps>`
     background: ${({ severity }) => {
       switch (severity.toLowerCase()) {
         case 'high':
-          return 'linear-gradient(90deg, #ef5350 0%, #f44336 100%)';
+          return 'linear-gradient(90deg, #ef5350, #f44336)';
         case 'medium':
-          return 'linear-gradient(90deg, #fb8c00 0%, #f57c00 100%)';
+          return 'linear-gradient(90deg, #fb8c00, #f57c00)';
         case 'low':
-          return 'linear-gradient(90deg, #66bb6a 0%, #43a047 100%)';
+          return 'linear-gradient(90deg, #66bb6a, #43a047)';
         default:
-          return 'linear-gradient(90deg, #90caf9 0%, #42a5f5 100%)';
+          return 'linear-gradient(90deg, #90caf9, #42a5f5)';
       }
     }};
   }
@@ -48,6 +53,10 @@ const StyledCard = styled(motion(Card))<StyledCardProps>`
 
 const StyledCardContent = styled(CardContent)`
   padding: 24px;
+  
+  @media (max-width: 899px) {
+    padding: 16px;
+  }
 `;
 
 const RiskHeader = styled('div')`
@@ -55,6 +64,13 @@ const RiskHeader = styled('div')`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 16px;
+  
+  @media (max-width: 899px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
 `;
 
 const SeverityChip = styled(Chip)<{ severity: string }>`
@@ -66,19 +82,19 @@ const SeverityChip = styled(Chip)<{ severity: string }>`
     switch (severity.toLowerCase()) {
       case 'high':
         return `
-          background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+          background: linear-gradient(135deg, #ffebee, #ffcdd2);
           color: #c62828;
           border: 1px solid #ef9a9a;
         `;
       case 'medium':
         return `
-          background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+          background: linear-gradient(135deg, #fff3e0, #ffe0b2);
           color: #ef6c00;
           border: 1px solid #ffcc80;
         `;
       case 'low':
         return `
-          background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+          background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
           color: #2e7d32;
           border: 1px solid #a5d6a7;
         `;
@@ -86,10 +102,24 @@ const SeverityChip = styled(Chip)<{ severity: string }>`
         return '';
     }
   }}
+  
+  @media (max-width: 899px) {
+    height: 24px;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    
+    .MuiChip-icon {
+      font-size: 14px;
+    }
+  }
 `;
 
 const Section = styled('div')`
   margin-top: 16px;
+  
+  @media (max-width: 899px) {
+    margin-top: 12px;
+  }
   
   .section-header {
     display: flex;
@@ -100,12 +130,20 @@ const Section = styled('div')`
     .MuiSvgIcon-root {
       font-size: 18px;
       color: #1976d2;
+      
+      @media (max-width: 899px) {
+        font-size: 16px;
+      }
     }
     
     .title {
       font-weight: 600;
       color: #1976d2;
       font-size: 0.9rem;
+      
+      @media (max-width: 899px) {
+        font-size: 0.85rem;
+      }
     }
   }
 `;
@@ -125,16 +163,24 @@ const StyledListItem = styled(ListItem)`
   
   .MuiListItemIcon-root {
     min-width: 36px;
+    
+    @media (max-width: 899px) {
+      min-width: 32px;
+    }
   }
   
   .MuiSvgIcon-root {
     font-size: 18px;
+    
+    @media (max-width: 899px) {
+      font-size: 16px;
+    }
   }
 `;
 
 const CategoryChip = styled(Chip)`
   margin-right: 12px;
-  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
   color: #1565c0;
   border: 1px solid #90caf9;
   font-weight: 500;
@@ -143,6 +189,16 @@ const CategoryChip = styled(Chip)`
   .MuiChip-icon {
     font-size: 16px;
     color: #1976d2;
+  }
+  
+  @media (max-width: 899px) {
+    height: 20px;
+    font-size: 0.75rem;
+    margin-right: 8px;
+    
+    .MuiChip-icon {
+      font-size: 14px;
+    }
   }
 `;
 
@@ -181,7 +237,13 @@ const RiskCard: React.FC<RiskCardProps> = ({ risk, index }) => {
               label={risk.category}
               size="small"
             />
-            <Typography variant="h6" sx={{ fontSize: '1.1rem', fontWeight: 600 }}>
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                fontSize: { xs: '1rem', sm: '1.1rem' }, 
+                fontWeight: 600 
+              }}
+            >
               {risk.title}
             </Typography>
           </div>
@@ -192,7 +254,11 @@ const RiskCard: React.FC<RiskCardProps> = ({ risk, index }) => {
           />
         </RiskHeader>
 
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        <Typography 
+          variant="body2" 
+          color="text.secondary" 
+          sx={{ mb: { xs: 1.5, sm: 2 } }}
+        >
           {risk.description}
         </Typography>
 
@@ -240,8 +306,11 @@ const RiskCard: React.FC<RiskCardProps> = ({ risk, index }) => {
                 variant="outlined"
                 size="small"
                 sx={{ 
-                  height: '24px',
-                  '& .MuiChip-icon': { fontSize: '16px' }
+                  height: { xs: '20px', sm: '24px' },
+                  '& .MuiChip-icon': { 
+                    fontSize: { xs: '14px', sm: '16px' } 
+                  },
+                  fontSize: { xs: '0.75rem', sm: '0.8125rem' }
                 }}
               />
             ))}

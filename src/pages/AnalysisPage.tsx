@@ -10,23 +10,44 @@ const PageContainer = styled('div')`
   min-height: 100vh;
   background: #f8f9fa;
   display: flex;
+  flex-direction: column;
+  
+  @media (min-width: 900px) {
+    flex-direction: row;
+  }
 `;
 
 const Sidebar = styled('div')`
-  width: 320px;
   background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
-  padding: 32px;
+  padding: 24px;
   color: white;
-  position: fixed;
-  height: 100vh;
-  overflow-y: auto;
+  
+  @media (min-width: 900px) {
+    width: 320px;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 32px;
+  }
+  
+  @media (max-width: 899px) {
+    padding: 20px;
+  }
 `;
 
 const MainContent = styled('div')`
   flex: 1;
-  margin-left: 320px;
-  padding: 32px;
-  max-width: calc(100vw - 320px);
+  padding: 24px;
+  
+  @media (min-width: 900px) {
+    margin-left: 320px;
+    padding: 32px;
+    max-width: calc(100vw - 320px);
+  }
+  
+  @media (max-width: 899px) {
+    padding: 16px;
+  }
 `;
 
 const BackButton = styled(IconButton)`
@@ -37,6 +58,19 @@ const BackButton = styled(IconButton)`
   &:hover {
     background: rgba(255, 255, 255, 0.2);
   }
+  
+  @media (max-width: 899px) {
+    margin-bottom: 16px;
+  }
+`;
+
+const StatsContainer = styled('div')`
+  @media (max-width: 899px) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 16px;
+  }
 `;
 
 const StatCard = styled(motion.div)`
@@ -45,6 +79,15 @@ const StatCard = styled(motion.div)`
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 16px;
+  
+  @media (max-width: 899px) {
+    margin-bottom: 0;
+    padding: 16px;
+    
+    .header {
+      margin-bottom: 4px !important;
+    }
+  }
   
   .header {
     display: flex;
@@ -61,10 +104,25 @@ const StatCard = styled(motion.div)`
       align-items: center;
       justify-content: center;
       
+      @media (max-width: 899px) {
+        width: 32px;
+        height: 32px;
+      }
+      
       .MuiSvgIcon-root {
         color: white;
         font-size: 20px;
+        
+        @media (max-width: 899px) {
+          font-size: 16px;
+        }
       }
+    }
+  }
+  
+  h4 {
+    @media (max-width: 899px) {
+      font-size: 1.5rem;
     }
   }
 `;
@@ -74,12 +132,24 @@ const TabsContainer = styled('div')`
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   margin-bottom: 24px;
+  
+  @media (max-width: 899px) {
+    margin: 0 -16px;
+    border-radius: 0;
+  }
 `;
 
 const StyledTabs = styled(Tabs)`
   .MuiTabs-indicator {
     height: 3px;
     border-radius: 3px;
+  }
+  
+  @media (max-width: 899px) {
+    .MuiTabs-flexContainer {
+      gap: 8px;
+      padding: 8px;
+    }
   }
 `;
 
@@ -91,14 +161,32 @@ const StyledTab = styled(Tab)`
   &.Mui-selected {
     color: #1976d2;
   }
+  
+  @media (max-width: 899px) {
+    min-height: 48px;
+    padding: 6px 12px;
+    font-size: 0.875rem;
+    
+    .MuiSvgIcon-root {
+      font-size: 18px;
+    }
+  }
 `;
 
 const TabPanel = styled('div')`
   padding: 24px;
+  
+  @media (max-width: 899px) {
+    padding: 16px 12px;
+  }
 `;
 
 const RiskGrid = styled(Grid)`
   margin-top: 24px;
+  
+  @media (max-width: 899px) {
+    margin-top: 16px;
+  }
 `;
 
 interface AnalysisPageProps {
@@ -178,28 +266,30 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
         <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
           Risk Analysis Report
         </Typography>
-        <Typography variant="body2" sx={{ opacity: 0.8, mb: 4 }}>
+        <Typography variant="body2" sx={{ opacity: 0.8, mb: { xs: 2, md: 4 } }}>
           {selectedBusiness.label} • {selectedRegion.label}
         </Typography>
 
-        {stats.map((stat, index) => (
-          <StatCard
-            key={index}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.1 }}
-          >
-            <div className="header">
-              <div className="icon">{stat.icon}</div>
-              <Typography variant="h4" sx={{ fontWeight: 600 }}>
-                {stat.value}
+        <StatsContainer>
+          {stats.map((stat, index) => (
+            <StatCard
+              key={index}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <div className="header">
+                <div className="icon">{stat.icon}</div>
+                <Typography variant="h4" sx={{ fontWeight: 600 }}>
+                  {stat.value}
+                </Typography>
+              </div>
+              <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                {stat.label}
               </Typography>
-            </div>
-            <Typography variant="body2" sx={{ opacity: 0.8 }}>
-              {stat.label}
-            </Typography>
-          </StatCard>
-        ))}
+            </StatCard>
+          ))}
+        </StatsContainer>
       </Sidebar>
 
       <MainContent>
