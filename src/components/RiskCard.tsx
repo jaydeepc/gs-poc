@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { styled } from '@mui/material/styles';
 import { Card, CardContent, Typography, Chip, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import { Warning, CheckCircle, ArrowForward, Business, AccountBalance } from '@mui/icons-material';
+import { Warning, CheckCircle, ArrowForward, Business, AccountBalance, Assessment } from '@mui/icons-material';
 import { Risk } from '../types';
 
 interface StyledCardProps {
@@ -11,17 +11,60 @@ interface StyledCardProps {
 
 const StyledCard = styled(motion(Card))<StyledCardProps>`
   margin: 24px 0;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
-  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+  background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(10px);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    z-index: 0;
+  }
 
   &:hover {
-    transform: translateY(-6px) scale(1.01);
+    transform: translateY(-6px);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    
+    &::after {
+      opacity: 1;
+    }
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: ${({ severity }) => {
+      switch (severity.toLowerCase()) {
+        case 'high':
+          return 'linear-gradient(90deg, #ef5350 0%, #f44336 100%)';
+        case 'medium':
+          return 'linear-gradient(90deg, #fb8c00 0%, #f57c00 100%)';
+        case 'low':
+          return 'linear-gradient(90deg, #66bb6a 0%, #43a047 100%)';
+        default:
+          return 'linear-gradient(90deg, #90caf9 0%, #42a5f5 100%)';
+      }
+    }};
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
   }
 
   &::before {
@@ -58,8 +101,26 @@ const StyledCardContent = styled(CardContent)`
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+    background: radial-gradient(
+      circle at top right,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 255, 255, 0.7) 100%
+    );
     z-index: -1;
+  }
+`;
+
+const SectionTitle = styled(Typography)`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+  margin-bottom: 12px;
+  color: #1976d2;
+  font-weight: 600;
+  
+  .MuiSvgIcon-root {
+    font-size: 20px;
   }
 `;
 
@@ -198,16 +259,16 @@ const RiskCard: React.FC<RiskCardProps> = ({ risk, index }) => {
           {risk.description}
         </Typography>
 
-        <Typography variant="subtitle1" color="primary" gutterBottom>
-          Regional Relevance
-        </Typography>
+        <SectionTitle variant="subtitle1">
+          <Business fontSize="small" /> Regional Relevance
+        </SectionTitle>
         <Typography variant="body2" paragraph>
           {risk.relevance_explanation}
         </Typography>
 
-        <Typography variant="subtitle1" color="primary" gutterBottom>
-          Resolution Steps
-        </Typography>
+        <SectionTitle variant="subtitle1">
+          <CheckCircle fontSize="small" /> Resolution Steps
+        </SectionTitle>
         <StyledList>
           {risk.resolution_steps.map((step, idx) => (
             <StyledListItem key={idx}>
@@ -219,9 +280,9 @@ const RiskCard: React.FC<RiskCardProps> = ({ risk, index }) => {
           ))}
         </StyledList>
 
-        <Typography variant="subtitle1" color="primary" gutterBottom style={{ marginTop: '16px' }}>
-          Regulatory Bodies
-        </Typography>
+        <SectionTitle variant="subtitle1">
+          <AccountBalance fontSize="small" /> Regulatory Bodies
+        </SectionTitle>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
           {risk.regulatory_bodies.map((body, idx) => (
             <Chip
@@ -234,9 +295,9 @@ const RiskCard: React.FC<RiskCardProps> = ({ risk, index }) => {
           ))}
         </div>
 
-        <Typography variant="subtitle1" color="primary" gutterBottom>
-          Regional Factors
-        </Typography>
+        <SectionTitle variant="subtitle1">
+          <Assessment fontSize="small" /> Regional Factors
+        </SectionTitle>
         <StyledList>
           {risk.regional_specific_factors.map((factor, idx) => (
             <StyledListItem key={idx}>

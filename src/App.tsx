@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { ThemeProvider, createTheme, styled, alpha } from '@mui/material/styles';
-import { Container, Button, Box, CssBaseline, Paper } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { CssBaseline } from '@mui/material';
+import { AnimatePresence, motion } from 'framer-motion';
 import { BusinessType, Region, RiskAnalysis } from './types';
-import BusinessSelector from './components/BusinessSelector';
-import RegionSelector from './components/RegionSelector';
-import RiskDisplay from './components/RiskDisplay';
 import HeroSection from './components/HeroSection';
+import SelectionForm from './components/SelectionForm';
+import AnalysisPage from './pages/AnalysisPage';
 import { generateRiskAnalysis } from './services/openai';
 
 const theme = createTheme({
@@ -15,7 +15,7 @@ const theme = createTheme({
     },
     background: {
       default: '#f5f5f5',
-    },
+    }
   },
   typography: {
     fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
@@ -27,65 +27,33 @@ const theme = createTheme({
     h6: { fontWeight: 500 }
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+          minHeight: '100vh'
+        }
+      }
+    },
     MuiButton: {
       styleOverrides: {
         root: {
           textTransform: 'none',
           borderRadius: '8px',
-          padding: '10px 24px',
-        },
-      },
-    },
-  },
+          padding: '10px 24px'
+        }
+      }
+    }
+  }
 });
 
-const MainContent = styled('main')`
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-`;
-
-const ContentContainer = styled(Container)`
-  padding: 40px 24px;
-`;
-
-const SelectionContainer = styled(Paper)`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 32px;
-  background: ${({ theme }) => alpha(theme.palette.background.paper, 0.9)};
-  border-radius: 24px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-`;
-
-const AnalyzeButton = styled(Button)`
-  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
-  transition: all 0.3s ease;
-  text-transform: none;
-  font-size: 1.1rem;
-  padding: 12px 0;
-  
-  &:hover {
-    background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
-  }
-  
-  &:active {
-    transform: translateY(0);
-  }
-`;
-
-function App() {
+const App = () => {
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessType | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
   const [analysis, setAnalysis] = useState<RiskAnalysis | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showAnalysis, setShowAnalysis] = useState(false);
 
   const handleAnalyze = async () => {
     if (!selectedBusiness || !selectedRegion) {
@@ -102,6 +70,7 @@ function App() {
         selectedRegion.value
       );
       setAnalysis(result);
+      setShowAnalysis(true);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       setError(`Failed to generate risk analysis: ${errorMessage}`);
@@ -111,43 +80,50 @@ function App() {
     }
   };
 
+  const handleBack = () => {
+    setShowAnalysis(false);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <MainContent>
-        <HeroSection />
-        <ContentContainer>
-          <SelectionContainer elevation={0}>
-          <BusinessSelector
-            value={selectedBusiness}
-            onSelect={setSelectedBusiness}
-          />
-          <RegionSelector
-            value={selectedRegion}
-            onSelect={setSelectedRegion}
-          />
-          <AnalyzeButton
-            variant="contained"
-            size="large"
-            fullWidth
-            onClick={handleAnalyze}
-            disabled={!selectedBusiness || !selectedRegion || isLoading}
+      <AnimatePresence mode="wait">
+        {!showAnalysis ? (
+          <motion.div
+            key="selection"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            {isLoading ? 'Analyzing Risks...' : 'Generate Risk Analysis'}
-          </AnalyzeButton>
-          </SelectionContainer>
-
-          <Box mt={4}>
-            <RiskDisplay
-              analysis={analysis}
+            <HeroSection />
+            <SelectionForm
+              selectedBusiness={selectedBusiness}
+              selectedRegion={selectedRegion}
+              onBusinessSelect={setSelectedBusiness}
+              onRegionSelect={setSelectedRegion}
+              onAnalyze={handleAnalyze}
               isLoading={isLoading}
               error={error}
             />
-          </Box>
-        </ContentContainer>
-      </MainContent>
+          </motion.div>
+        ) : analysis && (
+          <motion.div
+            key="analysis"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <AnalysisPage
+              analysis={analysis}
+              selectedBusiness={selectedBusiness!}
+              selectedRegion={selectedRegion!}
+              onBack={handleBack}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </ThemeProvider>
   );
-}
+};
 
 export default App;
