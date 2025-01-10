@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
-import { Container, Typography, Button, Box, CssBaseline } from '@mui/material';
+import { ThemeProvider, createTheme, styled, alpha } from '@mui/material/styles';
+import { Container, Button, Box, CssBaseline, Paper } from '@mui/material';
 import { BusinessType, Region, RiskAnalysis } from './types';
 import BusinessSelector from './components/BusinessSelector';
 import RegionSelector from './components/RegionSelector';
 import RiskDisplay from './components/RiskDisplay';
+import HeroSection from './components/HeroSection';
 import { generateRiskAnalysis } from './services/openai';
-import { Analytics } from '@mui/icons-material';
 
 const theme = createTheme({
   palette: {
@@ -19,6 +19,12 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    h1: { fontWeight: 700 },
+    h2: { fontWeight: 700 },
+    h3: { fontWeight: 600 },
+    h4: { fontWeight: 600 },
+    h5: { fontWeight: 500 },
+    h6: { fontWeight: 500 }
   },
   components: {
     MuiButton: {
@@ -33,34 +39,45 @@ const theme = createTheme({
   },
 });
 
-const StyledContainer = styled(Container)`
-  padding-top: 40px;
-  padding-bottom: 40px;
+const MainContent = styled('main')`
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 `;
 
-const Header = styled('header')`
-  text-align: center;
-  margin-bottom: 40px;
+const ContentContainer = styled(Container)`
+  padding: 40px 24px;
 `;
 
-const Logo = styled('div')`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 16px;
-`;
-
-const SelectionContainer = styled(Box)`
+const SelectionContainer = styled(Paper)`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
-  padding: 24px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 32px;
+  background: ${({ theme }) => alpha(theme.palette.background.paper, 0.9)};
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+`;
+
+const AnalyzeButton = styled(Button)`
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  transition: all 0.3s ease;
+  text-transform: none;
+  font-size: 1.1rem;
+  padding: 12px 0;
+  
+  &:hover {
+    background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
 `;
 
 function App() {
@@ -97,20 +114,10 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <StyledContainer>
-        <Header>
-          <Logo>
-            <Analytics sx={{ fontSize: 40, color: 'primary.main' }} />
-            <Typography variant="h3" component="h1" color="primary">
-              GS Risk Audit
-            </Typography>
-          </Logo>
-          <Typography variant="h6" color="text.secondary" gutterBottom>
-            Comprehensive Regional Business Risk Analysis
-          </Typography>
-        </Header>
-
-        <SelectionContainer>
+      <MainContent>
+        <HeroSection />
+        <ContentContainer>
+          <SelectionContainer elevation={0}>
           <BusinessSelector
             value={selectedBusiness}
             onSelect={setSelectedBusiness}
@@ -119,25 +126,26 @@ function App() {
             value={selectedRegion}
             onSelect={setSelectedRegion}
           />
-          <Button
+          <AnalyzeButton
             variant="contained"
             size="large"
             fullWidth
             onClick={handleAnalyze}
             disabled={!selectedBusiness || !selectedRegion || isLoading}
           >
-            {isLoading ? 'Analyzing...' : 'Analyze Risks'}
-          </Button>
-        </SelectionContainer>
+            {isLoading ? 'Analyzing Risks...' : 'Generate Risk Analysis'}
+          </AnalyzeButton>
+          </SelectionContainer>
 
-        <Box mt={4}>
-          <RiskDisplay
-            analysis={analysis}
-            isLoading={isLoading}
-            error={error}
-          />
-        </Box>
-      </StyledContainer>
+          <Box mt={4}>
+            <RiskDisplay
+              analysis={analysis}
+              isLoading={isLoading}
+              error={error}
+            />
+          </Box>
+        </ContentContainer>
+      </MainContent>
     </ThemeProvider>
   );
 }

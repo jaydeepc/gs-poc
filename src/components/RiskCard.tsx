@@ -5,22 +5,62 @@ import { Card, CardContent, Typography, Chip, List, ListItem, ListItemIcon, List
 import { Warning, CheckCircle, ArrowForward, Business, AccountBalance } from '@mui/icons-material';
 import { Risk } from '../types';
 
-const StyledCard = styled(motion(Card))`
-  margin: 16px 0;
-  border-radius: 12px;
+interface StyledCardProps {
+  severity: string;
+}
+
+const StyledCard = styled(motion(Card))<StyledCardProps>`
+  margin: 24px 0;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  background: #ffffff;
-  transition: all 0.3s ease;
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: ${({ severity }) => {
+      switch (severity.toLowerCase()) {
+        case 'high':
+          return 'linear-gradient(90deg, #ff4d4d 0%, #ff8080 100%)';
+        case 'medium':
+          return 'linear-gradient(90deg, #ffa726 0%, #ffcc80 100%)';
+        case 'low':
+          return 'linear-gradient(90deg, #66bb6a 0%, #a5d6a7 100%)';
+        default:
+          return 'linear-gradient(90deg, #90caf9 0%, #bbdefb 100%)';
+      }
+    }};
   }
 `;
 
 const StyledCardContent = styled(CardContent)`
-  padding: 24px;
+  padding: 32px;
+  position: relative;
+  z-index: 1;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+    z-index: -1;
+  }
 `;
 
 const RiskHeader = styled('div')`
@@ -32,32 +72,80 @@ const RiskHeader = styled('div')`
 
 const SeverityChip = styled(Chip)<{ severity: string }>`
   font-weight: 600;
+  padding: 4px 12px;
+  height: 28px;
+  border-radius: 14px;
   ${({ severity }) => {
     switch (severity.toLowerCase()) {
       case 'high':
-        return 'background-color: #ffebee; color: #d32f2f;';
+        return `
+          background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+          color: #c62828;
+          border: 1px solid #ef9a9a;
+        `;
       case 'medium':
-        return 'background-color: #fff3e0; color: #f57c00;';
+        return `
+          background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+          color: #ef6c00;
+          border: 1px solid #ffcc80;
+        `;
       case 'low':
-        return 'background-color: #e8f5e9; color: #388e3c;';
+        return `
+          background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+          color: #2e7d32;
+          border: 1px solid #a5d6a7;
+        `;
       default:
         return '';
     }
   }}
+  
+  .MuiChip-icon {
+    color: inherit;
+    margin-left: 4px;
+  }
 `;
 
 const StyledList = styled(List)`
   padding: 0;
+  margin-top: 16px;
 `;
 
 const StyledListItem = styled(ListItem)`
-  padding: 8px 0;
+  padding: 12px 0;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  
+  &:hover {
+    background: rgba(0, 0, 0, 0.02);
+    padding-left: 8px;
+  }
+  
+  .MuiListItemIcon-root {
+    min-width: 40px;
+  }
+  
+  .MuiSvgIcon-root {
+    transition: transform 0.2s ease;
+  }
+  
+  &:hover .MuiSvgIcon-root {
+    transform: scale(1.1);
+  }
 `;
 
 const CategoryChip = styled(Chip)`
-  margin-right: 8px;
-  background-color: #e3f2fd;
-  color: #1976d2;
+  margin-right: 12px;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  color: #1565c0;
+  border: 1px solid #90caf9;
+  font-weight: 500;
+  padding: 4px 8px;
+  height: 28px;
+  
+  .MuiChip-icon {
+    color: #1976d2;
+  }
 `;
 
 interface RiskCardProps {
@@ -80,6 +168,7 @@ const RiskCard: React.FC<RiskCardProps> = ({ risk, index }) => {
 
   return (
     <StyledCard
+      severity={risk.severity}
       variants={cardVariants}
       initial="hidden"
       animate="visible"
