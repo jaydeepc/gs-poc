@@ -1,96 +1,104 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import { motion } from 'framer-motion';
-import { Container, Typography, Grid, IconButton } from '@mui/material';
+import { Typography, Grid, IconButton, Box, Tabs, Tab } from '@mui/material';
 import { ArrowBack, Assessment, Security, Gavel, AccountBalance, TrendingUp } from '@mui/icons-material';
 import RiskCard from '../components/RiskCard';
 import { RiskAnalysis, BusinessType, Region } from '../types';
 
 const PageContainer = styled('div')`
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
-  padding: 40px 0;
+  background: #f8f9fa;
+  display: flex;
 `;
 
-const Header = styled('div')`
-  display: flex;
-  align-items: center;
-  margin-bottom: 40px;
-  padding: 0 24px;
+const Sidebar = styled('div')`
+  width: 320px;
+  background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+  padding: 32px;
+  color: white;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+`;
+
+const MainContent = styled('div')`
+  flex: 1;
+  margin-left: 320px;
+  padding: 32px;
+  max-width: calc(100vw - 320px);
 `;
 
 const BackButton = styled(IconButton)`
   color: white;
   background: rgba(255, 255, 255, 0.1);
-  margin-right: 20px;
+  margin-bottom: 24px;
   
   &:hover {
     background: rgba(255, 255, 255, 0.2);
   }
 `;
 
-const HeaderContent = styled('div')`
-  flex: 1;
-`;
-
-const StyledContainer = styled(Container)`
-  position: relative;
-`;
-
-const CategoryHeader = styled('div')`
-  margin: 40px 0 20px;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-`;
-
-const CategoryIcon = styled('div')`
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-  .MuiSvgIcon-root {
-    color: white;
-    font-size: 28px;
-  }
-`;
-
-const Stats = styled(Grid)`
-  margin-top: 32px;
-  padding: 0 24px;
-`;
-
 const StatCard = styled(motion.div)`
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
-  border-radius: 16px;
-  padding: 24px;
-  color: white;
-  display: flex;
-  align-items: center;
-  gap: 16px;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
   
-  .icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.1);
+  .header {
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 12px;
+    margin-bottom: 8px;
     
-    .MuiSvgIcon-root {
-      color: white;
-      font-size: 24px;
+    .icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      .MuiSvgIcon-root {
+        color: white;
+        font-size: 20px;
+      }
     }
   }
+`;
+
+const TabsContainer = styled('div')`
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  margin-bottom: 24px;
+`;
+
+const StyledTabs = styled(Tabs)`
+  .MuiTabs-indicator {
+    height: 3px;
+    border-radius: 3px;
+  }
+`;
+
+const StyledTab = styled(Tab)`
+  text-transform: none;
+  font-weight: 600;
+  min-height: 56px;
+  
+  &.Mui-selected {
+    color: #1976d2;
+  }
+`;
+
+const TabPanel = styled('div')`
+  padding: 24px;
+`;
+
+const RiskGrid = styled(Grid)`
+  margin-top: 24px;
 `;
 
 interface AnalysisPageProps {
@@ -154,78 +162,86 @@ const AnalysisPage: React.FC<AnalysisPageProps> = ({
     }
   ];
 
+  const [currentTab, setCurrentTab] = useState(0);
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setCurrentTab(newValue);
+  };
+
   return (
     <PageContainer>
-      <StyledContainer maxWidth="xl">
-        <Header>
-          <BackButton onClick={onBack}>
-            <ArrowBack />
-          </BackButton>
-          <HeaderContent>
-            <Typography 
-              variant="h4" 
-              color="white" 
-              gutterBottom 
-              sx={{ fontWeight: 600 }}
-            >
-              Risk Analysis Report
-            </Typography>
-            <Typography variant="h6" color="rgba(255, 255, 255, 0.8)">
-              {selectedBusiness.label} • {selectedRegion.label}
-            </Typography>
-          </HeaderContent>
-        </Header>
+      <Sidebar>
+        <BackButton onClick={onBack}>
+          <ArrowBack />
+        </BackButton>
+        
+        <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+          Risk Analysis Report
+        </Typography>
+        <Typography variant="body2" sx={{ opacity: 0.8, mb: 4 }}>
+          {selectedBusiness.label} • {selectedRegion.label}
+        </Typography>
 
-        <Stats container spacing={3}>
-          {stats.map((stat, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
-              <StatCard
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <div className="icon">
-                  {stat.icon}
-                </div>
-                <div>
-                  <Typography variant="h4" sx={{ fontWeight: 600 }}>
-                    {stat.value}
-                  </Typography>
-                  <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                    {stat.label}
-                  </Typography>
-                </div>
-              </StatCard>
-            </Grid>
-          ))}
-        </Stats>
-
-        {Object.entries(risksByCategory).map(([category, risks], categoryIndex) => (
-          <motion.div
-            key={category}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: categoryIndex * 0.2 }}
+        {stats.map((stat, index) => (
+          <StatCard
+            key={index}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.1 }}
           >
-            <CategoryHeader>
-              <CategoryIcon>
-                {getCategoryIcon(category)}
-              </CategoryIcon>
-              <Typography variant="h5" color="white" sx={{ fontWeight: 500 }}>
-                {category}
+            <div className="header">
+              <div className="icon">{stat.icon}</div>
+              <Typography variant="h4" sx={{ fontWeight: 600 }}>
+                {stat.value}
               </Typography>
-            </CategoryHeader>
-            
-            <Grid container spacing={3}>
-              {risks.map((risk, index) => (
-                <Grid item xs={12} md={6} key={index}>
-                  <RiskCard risk={risk} index={index} />
-                </Grid>
-              ))}
-            </Grid>
-          </motion.div>
+            </div>
+            <Typography variant="body2" sx={{ opacity: 0.8 }}>
+              {stat.label}
+            </Typography>
+          </StatCard>
         ))}
-      </StyledContainer>
+      </Sidebar>
+
+      <MainContent>
+        <TabsContainer>
+          <StyledTabs
+            value={currentTab}
+            onChange={handleTabChange}
+            variant="scrollable"
+            scrollButtons="auto"
+          >
+            {Object.keys(risksByCategory).map((category) => (
+              <StyledTab
+                key={category}
+                label={
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    {getCategoryIcon(category)}
+                    <span>{category}</span>
+                  </Box>
+                }
+              />
+            ))}
+          </StyledTabs>
+
+          {Object.entries(risksByCategory).map(([category, risks], index) => (
+            <TabPanel
+              key={category}
+              role="tabpanel"
+              hidden={currentTab !== index}
+            >
+              {currentTab === index && (
+                <RiskGrid container spacing={2}>
+                  {risks.map((risk, riskIndex) => (
+                    <Grid item xs={12} key={riskIndex}>
+                      <RiskCard risk={risk} index={riskIndex} />
+                    </Grid>
+                  ))}
+                </RiskGrid>
+              )}
+            </TabPanel>
+          ))}
+        </TabsContainer>
+      </MainContent>
     </PageContainer>
   );
 };
